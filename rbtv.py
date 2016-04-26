@@ -38,7 +38,7 @@ class Show:
     #ret += Colors.Light + " (" + self.duration + ")"
     if self.state > 0:
       now = datetime.datetime.today()
-      ret += " (in " + str(math.ceil((self.time - now).seconds / 60)) + 
+      ret += " (in " + str(math.ceil((self.time - now).seconds / 60)) + \
         " Minuten)"
     ret += Colors.Reset
     return ret
