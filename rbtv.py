@@ -38,7 +38,8 @@ class Show:
     #ret += Colors.Light + " (" + self.duration + ")"
     if self.state > 0:
       now = datetime.datetime.today()
-      ret += " (in " + str(math.ceil((self.time - now).seconds / 60)) + " Minuten)"
+      ret += " (in " + str(math.ceil((self.time - now).seconds / 60)) + 
+        " Minuten)"
     ret += Colors.Reset
     return ret
 
@@ -65,9 +66,10 @@ def getShowsFromWebsite():
 
   # Scrape for all shows giving them absolute datetime objects.
   result = list()
-  # Loop over all days.
+  # Find all divs with class tag 'day'.
   for day in tree.xpath(
       '//div[contains(concat(" ", normalize-space(@class), " "), " day ")]'):
+    # Get the proccessed contents of the date header div.
     date = scrape(day, 'div[@class="dateHeader"]/span/text()')
     # Loop over all shows for the current weekday.
     for show in day.xpath('descendant::div[@id="show-"]'):
@@ -81,7 +83,7 @@ def getShowsFromWebsite():
           'descendant::span[@class="showDuration"]/text()')
       result.append(Show(time, title, details, duration))
 
-  # Set the shows' states.
+  # Set the shows' positions in the timeline (past, current, coming-up).
   now = datetime.datetime.today()
   for prev, current, next in neighborhood(result):
     if current.time <= now and (next == None or next.time > now):
@@ -100,10 +102,30 @@ def getShowsFromWebsite():
 
 if __name__ == "__main__":
   # Commandline options.
-  parser = argparse.ArgumentParser(description="A commandline broadcasting schedule for https://www.twitch.tv/rocketbeanstv")
-  parser.add_argument('-c', '--no-color', dest='noColor', default=False, action="store_true", help="disable text formatting")
-  parser.add_argument('-p', dest='nrOfPastShows', default=1, type=int, help="set the number of past shows to list (default: 1)")
-  parser.add_argument('-f', dest='nrOfFutureShows', default=6, type=int, help="set the number of future shows to list (default: 6)")
+  parser = argparse.ArgumentParser(
+          description = "A commandline broadcasting schedule for "
+            "https://www.twitch.tv/rocketbeanstv")
+  parser.add_argument(
+          '-c', '--no-color', 
+          dest = 'noColor', 
+          default = False, 
+          action = "store_true", 
+          help = "disable text formatting"
+        )
+  parser.add_argument(
+          '-p', 
+          dest = 'nrOfPastShows', 
+          default = 1, 
+          type = int, 
+          help= "set the number of past shows to list (default: 1)"
+        )
+  parser.add_argument(
+          '-f', 
+          dest = 'nrOfFutureShows', 
+          default = 6, 
+          type = int, 
+          help = "set the number of future shows to list (default: 6)"
+        )
   options = parser.parse_args()
 
   if options.noColor:
