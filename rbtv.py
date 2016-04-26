@@ -2,7 +2,7 @@
 # Copyright 2016, Freiburg,
 # Author: Markus Frey.
 
-import sys, errno, math, optparse, datetime, requests
+import sys, errno, math, argparse, datetime, requests
 from lxml import html
 from enum import Enum
 
@@ -100,11 +100,11 @@ def getShowsFromWebsite():
 
 if __name__ == "__main__":
   # Commandline options.
-  parser = optparse.OptionParser()
-  parser.add_option('-c', '--no-color', dest='noColor', default=False, action="store_true", help="Disable text formatting")
-  parser.add_option('-p', dest='nrOfPastShows', default=1, type="int", help="Set the number of past shows to list")
-  parser.add_option('-f', dest='nrOfFutureShows', default=6, type="int", help="Set the number of future shows to list")
-  options, remainder = parser.parse_args()
+  parser = argparse.ArgumentParser(description="A commandline broadcasting schedule for https://www.twitch.tv/rocketbeanstv")
+  parser.add_argument('-c', '--no-color', dest='noColor', default=False, action="store_true", help="disable text formatting")
+  parser.add_argument('-p', dest='nrOfPastShows', default=1, type=int, help="set the number of past shows to list (default: 1)")
+  parser.add_argument('-f', dest='nrOfFutureShows', default=6, type=int, help="set the number of future shows to list (default: 6)")
+  options = parser.parse_args()
 
   if options.noColor:
     Colors.disable()
